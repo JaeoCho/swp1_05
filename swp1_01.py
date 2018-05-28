@@ -1,5 +1,6 @@
 from wsgiref.simple_server import make_server
 from cgi import parse_qs
+import json
 
 def application(environ, start_response):
 	path = environ['PATH_INFO'].split('/')
@@ -12,11 +13,13 @@ def application(environ, start_response):
 
 	print('method : %s' % environ['REQUEST_METHOD'])
 	print('path : %s' %repr(path))
-	response_body = 'name : %s\nage : %s\n' %(name,age)
+	
+	response = {'name' : name, 'age' : age}
+	response_body = json.dumps(response)
 	
 	status = '200 OK'
 	response_headers = [
-		('Content-Type','text/plain'),
+		('Content-Type','application/json'),
 		('Content-Length', str(len(response_body)))
 	]
 
