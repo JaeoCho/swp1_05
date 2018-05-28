@@ -2,11 +2,12 @@ from wsgiref.simple_server import make_server
 from cgi import parse_qs
 
 def application(environ, start_response):
-
-	d = parse_qs(environ['QUERY_STRING'])
+	request_body_size = int(environ.get('CONTENT_LENGTH','0'))
+	request_body = environ['wsgi.input'].read(request_body_size)
+	d = parse_qs(request_body)
+#	d = parse_qs(environ['QUERY_STRING'])
 	name = d.get('name',[''])[0]
 	age = d.get('age',[''])[0]
-
 	response_body = 'name : %s\nage : %s\n' %(name,age)
 	
 	status = '200 OK'
