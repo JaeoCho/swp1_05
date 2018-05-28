@@ -1,10 +1,13 @@
 from wsgiref.simple_server import make_server
+from cgi import parse_qs
 
 def application(environ, start_response):
-    	response_body = [
-        	'%s: %s' % (key,value) for key, value in sorted(environ.items())
-    	]
-    	response_body = '\n'.join(response_body)
+
+	d = parse_qs(environ['QUERY_STRING'])
+	name = d.get('name',[''])[0]
+	age = d.get('age',[''])[0]
+
+	response_body = 'name : %s\nage : %s\n' %(name,age)
 	
 	status = '200 OK'
 	response_headers = [
@@ -18,4 +21,4 @@ def application(environ, start_response):
 
 httpd = make_server('localhost',8051,application)
 
-httpd.handle_request()
+httpd.serve_forever()
